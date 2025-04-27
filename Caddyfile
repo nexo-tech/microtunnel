@@ -2,5 +2,5 @@
 	tls {
 		dns cloudflare {env.CF_API_TOKEN}
 	}
-	reverse_proxy localhost:3000
+	reverse_proxy localhost:{env.CADDY_PROXY_PORT}
 }
