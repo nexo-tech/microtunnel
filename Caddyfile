@@ -1,8 +1,3 @@
-{
-	admin localhost:2019
-	debug
-}
-
 *.{$DOMAIN}, {$TUNNEL_SERVER_DOMAIN_NAME} {
 	tls {
 		dns cloudflare {env.CF_API_TOKEN}
