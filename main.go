@@ -17,12 +17,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var verbosity int
+
 func init() {
+	flag.IntVar(&verbosity, "v", 0, "verbosity level (0 = no logs, 1 = info, 2 = debug)")
 	logrus.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: time.RFC3339,
 	})
-	logrus.SetLevel(logrus.DebugLevel)
 }
 
 func randString(n int) string {
@@ -94,6 +96,18 @@ func main() {
 	srvURL := flag.String("server-url", "", "wss://example.com/tunnel (client)")
 	flag.Parse()
 
+	// Configure logging based on verbosity
+	switch verbosity {
+	case 0:
+		logrus.SetOutput(io.Discard) // Disable all logging
+	case 1:
+		logrus.SetLevel(logrus.InfoLevel)
+	case 2:
+		logrus.SetLevel(logrus.DebugLevel)
+	default:
+		logrus.SetLevel(logrus.DebugLevel)
+	}
+
 	if *srvURL == "" {
 		logrus.WithFields(logrus.Fields{"port": *port, "base_domain": *base}).Info("Starting server mode")
 		runServer(*port, *base)
@@ -129,6 +143,7 @@ func runServer(listenPort int, baseDomain string) {
 		sessions[id] = sess
 		mu.Unlock()
 		logrus.WithFields(logrus.Fields{"id": id, "base_domain": baseDomain}).Info("Client registered")
+		fmt.Printf("✨ New tunnel connected! Available at: https://%s.%s\n", id, baseDomain)
 
 		go func() {
 			<-sess.CloseChan()
@@ -203,6 +218,7 @@ func runServer(listenPort int, baseDomain string) {
 
 	addr := fmt.Sprintf(":%d", listenPort)
 	logrus.WithField("listen_addr", addr).Info("Server listening")
+	fmt.Printf("🚀 Server running on port %d\n", listenPort)
 	logrus.Fatal(http.ListenAndServe(addr, nil))
 }
 
