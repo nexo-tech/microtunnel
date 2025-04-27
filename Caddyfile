@@ -3,26 +3,7 @@
 	debug
 }
 
-{$TUNNEL_SERVER_DOMAIN_NAME} {
-	tls {
-		dns cloudflare {env.CF_API_TOKEN}
-	}
-	log {
-		output stdout
-		format console
-		level DEBUG
-	}
-	reverse_proxy localhost:3000 {
-		header_up Host {http.request.host}
-		header_up X-Real-IP {http.request.remote}
-		header_up X-Forwarded-For {http.request.remote}
-		header_up X-Forwarded-Proto {http.request.scheme}
-		header_up Connection {http.request.header.Connection}
-		header_up Upgrade {http.request.header.Upgrade}
-	}
-}
-
-*.{$DOMAIN} {
+*.{$DOMAIN}, {$TUNNEL_SERVER_DOMAIN_NAME} {
 	tls {
 		dns cloudflare {env.CF_API_TOKEN}
 	}
