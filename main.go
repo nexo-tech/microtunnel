@@ -223,10 +223,35 @@ func runServer(listenPort int, baseDomain string) {
 }
 
 func runClient(localPort int, serverURL string) {
-	ws, _, err := websocket.DefaultDialer.Dial(serverURL, nil)
-	if err != nil {
-		logrus.WithError(err).Fatal("Failed to dial server")
+	maxRetries := 8
+	backoff := 1 * time.Second
+	maxBackoff := 10 * time.Second
+
+	var ws *websocket.Conn
+	var err error
+
+	for retry := 0; retry < maxRetries; retry++ {
+		if retry > 0 {
+			fmt.Printf("🔄 Connection attempt %d/%d (waiting %s)...\n", retry+1, maxRetries, backoff)
+			time.Sleep(backoff)
+			// Exponential backoff with max cap
+			backoff *= 2
+			if backoff > maxBackoff {
+				backoff = maxBackoff
+			}
+		}
+
+		ws, _, err = websocket.DefaultDialer.Dial(serverURL, nil)
+		if err == nil {
+			break
+		}
+		logrus.WithError(err).Warning("Connection attempt failed")
 	}
+
+	if err != nil {
+		logrus.WithError(err).Fatal("Failed to dial server after all retries")
+	}
+
 	logrus.WithField("server_url", serverURL).Info("WebSocket connection established")
 
 	var info struct {
@@ -237,7 +262,7 @@ func runClient(localPort int, serverURL string) {
 		logrus.WithError(err).Fatal("Handshake failed")
 	}
 	logrus.WithFields(logrus.Fields{"id": info.ID, "base_domain": info.BaseDomain}).Info("Handshake info received")
-	fmt.Printf("▶ Tunnel ready at %s.%s\n", info.ID, info.BaseDomain)
+	fmt.Printf("▶ Tunnel ready at https://%s.%s\n", info.ID, info.BaseDomain)
 
 	conn := newWSConn(ws)
 	sess, err := yamux.Client(conn, nil)
