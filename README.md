@@ -1,5 +1,7 @@
 # microtunnel
 
+![Architecture Diagram](docs/architecture-diagram.svg)
+
 Self-hosted HTTPS tunnels made simple — using Go, Caddy, and Cloudflare.
 
 - One lightweight Go binary.
@@ -13,7 +15,7 @@ Self-hosted HTTPS tunnels made simple — using Go, Caddy, and Cloudflare.
 
 ## Why microtunnel?
 
-Tired of free tunnels timing out? Sick of complicated setups with closed-source tools? **microtunnel** lets you create your own HTTPS tunnels with minimal setup and full ownership.
+Most tunneling tools either require paid plans, rely on proprietary infrastructure, or need complex setups. **microtunnel** is a self-hosted alternative that gives you HTTPS tunnels using just Go, WebSockets, and Caddy — no third-party services required.
 
 - No paid plans
 - No vendor lock-in
@@ -116,14 +118,10 @@ For a deeper technical dive, check the full article.
 
 ![Browser Screenshot](docs/browser-demo.png)
 
-### Architecture
-
-![Architecture Diagram](docs/architecture-diagram.svg)
-
 ---
 
 ## License
 
-MIT. Do whatever you want. Stars are appreciated if this saves you a billable hour. 😉
+MIT. Do whatever you want. Stars are appreciated
 
 [GitHub Repository →](https://github.com/nexo-tech/microtunnel)
