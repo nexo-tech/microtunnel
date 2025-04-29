@@ -102,6 +102,26 @@ For a deeper technical dive, check the full article.
 
 ---
 
+## Demo
+
+### Tunnel established
+
+![Tunnel Ready](docs/client-tunnel-ready.png)
+
+### Incoming request to server
+
+![Server Log](docs/server-log-connected.png)
+
+### Accessing local app via HTTPS
+
+![Browser Screenshot](docs/browser-demo.png)
+
+### Architecture
+
+![Architecture Diagram](docs/architecture-diagram.svg)
+
+---
+
 ## License
 
 MIT. Do whatever you want. Stars are appreciated if this saves you a billable hour. 😉
